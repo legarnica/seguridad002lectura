@@ -1,14 +1,11 @@
 package cl.lherrera.gsss.config;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer.ExpressionInterceptUrlRegistry;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
@@ -81,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			// se especifica el nombre del atributo name para el usuario y la contraseña.
 			.usernameParameter("email").passwordParameter("password")
 			// redireccionamiento en caso de éxito.
-			.defaultSuccessUrl("/");
+			.defaultSuccessUrl("/user");
 
 	}
 
