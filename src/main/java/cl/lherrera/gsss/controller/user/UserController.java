@@ -15,11 +15,11 @@ import org.springframework.web.servlet.view.RedirectView;
 import cl.lherrera.gsss.dto.DetalleDTO;
 
 @Controller
-public class HomeController {
+public class UserController {
 
 	@GetMapping("/user")
 	public ModelAndView home(HttpSession session) {
-		ModelAndView modelAndView = new ModelAndView("user/home");
+		ModelAndView modelAndView = new ModelAndView("user/homeUser");
 		modelAndView.addObject("detalle", new DetalleDTO());
 		modelAndView.addObject("valores", session.getAttribute("valores"));
 		return modelAndView;

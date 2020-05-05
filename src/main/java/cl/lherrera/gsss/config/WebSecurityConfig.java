@@ -18,13 +18,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		String usuario = "foo";
-		String contrasenia =  passwordEncoder().encode("bar");
+		String usuario = "mail@fake.dev";
+		String contrasenia =  passwordEncoder().encode("1234");
+		String rol = "ADMIN";
+		
+		String usuario2 = "mail2@fake.dev";
+		String contrasenia2 =  passwordEncoder().encode("1234");
+		String rol2 = "USER";
 		
 		auth.inMemoryAuthentication()
 			.withUser(usuario)
 			.password(contrasenia)
-			.roles("ADMIN");
+			.roles(rol)
+			.and()
+			.withUser(usuario2)
+			.password(contrasenia2)
+			.roles(rol2);
 	}
 	
 	/**
@@ -61,25 +70,52 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * defaultSuccessUrl : Specifies where users will be redirected after authenticating successfully if they have not visited a secured page prior to authenticating.
 	 * 
 	 */
+//	@Override
+//	public void configure(HttpSecurity http) throws Exception {
+//		// se desabilita el sistema de seguridad csrf (muy vulnerable)
+//		http.csrf().disable()
+//			// se configura la ruta login para ser accedida sin autenticacion
+//			.authorizeRequests().antMatchers("/login").permitAll()
+//			// para todos los Request se habilita para usuarios autentificados.
+//			.anyRequest().authenticated()
+//			// indicación que se unsará el manejo por formulario
+//			.and().formLogin()
+//			// se especifica la página para el login personalizado.
+//			.loginPage("/login")
+//			// se especifica la url para cuando la verificación de credenciales falle.
+//			.failureUrl("/login?error=true")
+//			// se especifica el nombre del atributo name para el usuario y la contraseña.
+//			.usernameParameter("email").passwordParameter("password")
+//			// redireccionamiento en caso de éxito.
+//			.defaultSuccessUrl("/user");
+//
+//	}
+	
+	/*
+	 * Dejamos la aplicación distribuídos en direcctorios para poder
+	 * restringir por medio de estos direcctorios y le damos
+	 * acceso según su rol.
+	 */
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		// se desabilita el sistema de seguridad csrf (muy vulnerable)
 		http.csrf().disable()
-			// se configura la ruta login para ser accedida sin autenticacion
-			.authorizeRequests().antMatchers("/login").permitAll()
-			// para todos los Request se habilita para usuarios autentificados.
+			.authorizeRequests()
+			// para todo lo que esté dentro de admin (antMatch)
+			.antMatchers("/admin/**").hasRole("ADMIN")
+			// para todo lo que esté dentro de user (antMatch)
+			.antMatchers("/user/**").hasRole("USER")
+			// para esta URI se permite total acceso
+			.antMatchers("/login").permitAll()
+			// el usuario autentificado se le permite toda petición.
 			.anyRequest().authenticated()
-			// indicación que se unsará el manejo por formulario
-			.and().formLogin()
-			// se especifica la página para el login personalizado.
-			.loginPage("/login")
-			// se especifica la url para cuando la verificación de credenciales falle.
-			.failureUrl("/login?error=true")
-			// se especifica el nombre del atributo name para el usuario y la contraseña.
+			// configuración de los formularios
+			.and().formLogin().loginPage("/login").failureUrl("/login?error=true")
+			// seteo de nombres representativos en los formularios.
 			.usernameParameter("email").passwordParameter("password")
-			// redireccionamiento en caso de éxito.
-			.defaultSuccessUrl("/user");
-
+			// página por defecto en caso de éxito en el inicio de sesión.
+			.defaultSuccessUrl("/")
+			.and() 
+			.exceptionHandling().accessDeniedPage("/recurso-prohibido");
 	}
 
 	/**
