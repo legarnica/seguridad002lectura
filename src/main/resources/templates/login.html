@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css
+" integrity="sha384-
+ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4">
+                <form th:action="@{/login}" method="post" class="form-signin">
+                    <h3 class="form-signin-heading" th:text="Credenciales"></h3>
+                    <br />
+                    <!-- el name debe ser: email -->
+                    <input type="text" id="email" name="email" th:placeholder="Email" class="form-control" /> <br />
+                    <!-- el name debe ser: password -->
+                    <input type="password" th:placeholder="Password" id="password" name="password"
+                        class="form-control" />
+                    <br />
+                    <div align="center" th:if="${param.error}">
+                        <p style="font-size: 20; color: #FF1C19;">Verifica las
+                            credenciales.</p>
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit"
+                        th:text="Login">
+                    </button>
+                </form>
+            </div>
+            <div class="col-sm-4">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
