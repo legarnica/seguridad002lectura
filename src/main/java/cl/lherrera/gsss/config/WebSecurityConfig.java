@@ -7,12 +7,16 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	@Autowired 
+	private UserDetailsService userDetailsService;
 
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 
@@ -23,20 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		String usuario = "mail@fake.dev";
-		String contrasenia = passwordEncoder().encode("1234");
-		String rol = "ADMIN";
-
-		String usuario2 = "mail2@fake.dev";
-		String contrasenia2 = passwordEncoder().encode("1234");
-		String rol2 = "USER";
-
-		auth.inMemoryAuthentication()
-			.withUser(usuario).password(contrasenia).roles(rol)
-			
-			.and()
-			
-			.withUser(usuario2).password(contrasenia2).roles(rol2);
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder() );
 	}
 
 	/*
@@ -47,8 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
 			.authorizeRequests()
-				.antMatchers("/admin/**").hasRole("ADMIN")
-				.antMatchers("/user/**").hasRole("USER")
+				.antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+				.antMatchers("/user/**").hasAuthority("ROLE_USER")
 				.antMatchers("/login").permitAll()
 				// incluyendo el main
 				.anyRequest().authenticated()
